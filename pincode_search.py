@@ -1,9 +1,7 @@
 from flask import Flask, request, jsonify
-from urllib.parse import quote
 import csv
 
 app = Flask(__name__)
-new_url = quote(url)
 
 # Load data from CSV into a list of dictionaries
 data = []
