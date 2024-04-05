@@ -1,26 +1,30 @@
-from flask import Flask, request, jsonify
-import csv
+from flask import Flask, jsonify, request
+from pymongo import MongoClient
+from config import MONGO_URI, DATABASE_NAME, COLLECTION_NAME
 
 app = Flask(__name__)
 
-# Load data from CSV into a list of dictionaries
-data = []
-with open('pincode_latest.csv', newline='', encoding='utf-8') as csvfile:
-    reader = csv.DictReader(csvfile)
-    for row in reader:
-        data.append(row)
+# Connect to MongoDB using configuration from config.py
+client = MongoClient(MONGO_URI)
+db = client[DATABASE_NAME]
+collection = db[COLLECTION_NAME]
+
 
 @app.route('/get_data', methods=['GET'])
 def get_data():
     pincode = request.args.get('pincode')
-    if not pincode:
-        return jsonify({'error': 'Please provide a pincode parameter.'}), 400
 
-    results = [row for row in data if row['Pincode'] == pincode]
-    if not results:
-        return jsonify({'error': 'No data found for the provided pincode.'}), 404
+    if pincode:
+        # Query MongoDB collection for pincode
+        pincode_data = collection.find_one({'pincode': pincode}, {'_id': 0})
 
-    return jsonify(results), 200
+        if pincode_data:
+            return jsonify(pincode_data)
+        else:
+            return jsonify({'error': 'Pincode not found'}), 404
+    else:
+        return jsonify({'error': 'Pincode parameter is required'}), 400
+
 
 if __name__ == '__main__':
-    app.run(debug=False)
+    app.run(debug=True)
