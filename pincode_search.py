@@ -1,10 +1,19 @@
 from flask import Flask, jsonify, request
 from pymongo import MongoClient
-from config import MONGO_URI, DATABASE_NAME, COLLECTION_NAME
+from dotenv import load_dotenv
+import os
 
 app = Flask(__name__)
 
-# Connect to MongoDB using configuration from config.py
+# Load environment variables from .env file
+load_dotenv()
+
+# Get MongoDB configuration from environment variables
+MONGO_URI = os.getenv('MONGO_URI')
+DATABASE_NAME = os.getenv('DATABASE_NAME')
+COLLECTION_NAME = os.getenv('COLLECTION_NAME')
+
+# Connect to MongoDB using configuration from environment variables
 client = MongoClient(MONGO_URI)
 db = client[DATABASE_NAME]
 collection = db[COLLECTION_NAME]
