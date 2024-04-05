@@ -9,6 +9,12 @@ app = Flask(__name__)
 load_dotenv()
 
 # Get MongoDB configuration from environment variables
+print(os.getenv('MONGO_URI'))
+print('---------------')
+print(os.getenv('DATABASE_NAME'))
+print('---------------')
+print(os.getenv('COLLECTION_NAME'))
+print('---------------')
 MONGO_URI = os.getenv('MONGO_URI')
 DATABASE_NAME = os.getenv('DATABASE_NAME')
 COLLECTION_NAME = os.getenv('COLLECTION_NAME')
